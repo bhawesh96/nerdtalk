@@ -6,6 +6,7 @@ from firebase_admin import auth
 
 from postFeed import postFeed
 from respond import respond
+from getFeed import getFeed
 
 
 def handler(event, context):
@@ -20,6 +21,8 @@ def handler(event, context):
 	except Exception as ve:
 		return respond(ve, None, 403)
 
-	if event["httpMethod"] == "POST":
+	if event["httpMethod"] == "POST" and event["path"] == "/feed":
 		return postFeed(event)
 
+	elif event["httpMethod"] == "GET" and event["path"] == "/feed":
+		return getFeed(event)

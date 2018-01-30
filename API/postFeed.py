@@ -19,7 +19,7 @@ def postFeed(event):
 			"to": body['to']
 		}
 
-		user_feed.add_activity(activity_data)
-		return respond(None, "Success")
+		response = user_feed.add_activity(activity_data)['id']
+		return respond(None, response)
 	except Exception as err:
 		return respond(err, None, 502)
