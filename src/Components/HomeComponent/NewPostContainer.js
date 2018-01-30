@@ -13,6 +13,8 @@ import {firebaseStorage} from '../../firebaseConfig'
 import axios from 'axios'
 import {connect} from 'react-redux'
 
+import {client} from '../../Services/StreamService'
+
 class NewPostContainer extends Component {
   constructor(props) {
     super(props)
@@ -43,21 +45,22 @@ class NewPostContainer extends Component {
   }
 
   post() {
-    // alert(draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())))
-    let token = this.props.token
+
+    var html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
 
     axios({
       method: 'post',
       url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed',
-      headers: { 'Authorization': 'sdf'},
-      params: { mode: '1', user: 'bhawesh' },
+      headers: { 'Authorization': this.props.userToken },
+      params: { mode: 'user', user: 'chris' },
       data: JSON.stringify({
-        "actor": "rakshit",
+        "actor": "chris",
         "verb": "tweet",
-        "object": "dcfwf",
-        "time": "123123123123",
-        "foreign_id": "wefwefewfw",
-        "to":["notification:bhawesh"]
+        "object": "1",
+        "time": "2018-01-30T15:00:00.00+05:30",
+        "foreign_id": "12345",
+        "to":["notification:rakshit"],
+        "content": html
       })
     })
     .then(function(resp) {
@@ -132,10 +135,10 @@ class NewPostContainer extends Component {
 }
 
 function mapStateToProps(state) {
-  const {user, token} = state.userReducer
+  const {user, userToken} = state.userReducer
   return {
     user,
-    token
+    userToken
   }
 }
 

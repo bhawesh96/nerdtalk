@@ -12,15 +12,14 @@ class ProfileContainer extends Component {
 
   render() {
     return (
-      <Paper className="flex-col" zDepth={2} style={{minHeight: 100, borderRadius: 0, maxWidth: 20+'em', padding: 10, textAlign: 'center'}}>
-
+        <div>
           <img src={this.props.user && this.props.user.photoURL} style={{width: 7+'em', height: 7+'em', borderRadius: '50%'}}/>
 
           <h4>{this.props.user && this.props.user.displayName}</h4>
           <h5 style={{color: 'grey'}}>{this.props.user && this.props.user.email}</h5>
 
           <span style={{margin: 10, borderBottom: '1px solid lightgrey', width: '100%'}}></span>
-      </Paper>
+        </div>
     );
   }
 }

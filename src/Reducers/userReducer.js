@@ -17,7 +17,15 @@ export function userReducer(state=initialState, action) {
 			})
 		case "TOKEN":
 			return Object.assign({}, state, {
-			    token: action.token
+			    userToken: action.userToken
+			})
+		case "FEED_TOKEN":
+			return Object.assign({}, state, {
+			    feedToken: action.feedToken
+			})
+		case "USER_FEED":
+			return Object.assign({}, state, {
+			    user_feed: action.user_feed
 			})
 		default:
 			return state
