@@ -7,6 +7,7 @@ from firebase_admin import auth
 from postFeed import postFeed
 from respond import respond
 from getFeed import getFeed
+from getToken import getToken
 
 
 def handler(event, context):
@@ -26,3 +27,6 @@ def handler(event, context):
 
 	elif event["httpMethod"] == "GET" and event["path"] == "/feed":
 		return getFeed(event)
+
+	elif event["httpMethod"] == "GET" and event["path"] == "/feed/token":
+		return getToken(event)
