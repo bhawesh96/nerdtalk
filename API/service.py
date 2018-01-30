@@ -16,7 +16,7 @@ def handler(event, context):
 		firebase_admin.get_app()
 
 	try:
-		auth.verify_id_token(event["headers"]["Authorization"])
+		auth.verify_id_token(event['headers']['Authorization'])
 	except Exception as ve:
 		return respond(ve, None, 403)
 
