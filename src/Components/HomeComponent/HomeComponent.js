@@ -7,7 +7,7 @@ import axios from 'axios'
 
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
-import CardComponent from './CardComponent'
+import NewsFeedComponent from './NewsFeedComponent'
 import ProfileContainer from './ProfileContainer'
 import NotificationsContainer from './NotificationsContainer'
 import NewPostContainer from './NewPostContainer'
@@ -19,23 +19,7 @@ import {client} from '../../Services/StreamService'
 class HomeComponent extends Component {
   constructor(props) {
     super(props)
-    this.fetch = this.fetch.bind(this)
-  }
-
-  fetch() {
-    var scope = this;
-    axios({
-      method: 'get',
-      url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed',
-      headers: { 'Authorization': scope.props.userToken },
-      params: { mode: 'user', user: 'rakshit', limit: 100, offset: 0},
-    })
-    .then(function(resp) {
-      console.log(resp)
-    })
-    .catch(function(err) {
-      console.log(err)
-    })
+    this.follow = this.follow.bind(this)
   }
 
   componentWillMount() {
@@ -48,16 +32,17 @@ class HomeComponent extends Component {
             method: 'get',
             url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed/token',
             headers: { 'Authorization': userToken },
-            params: { mode: 'user', user: 'chris'},
+            params: { mode: 'user', user: scope.props.user.uid},
           })
           .then(function(resp) {
             var feedToken = resp.data;
             const {dispatch} = scope.props
             dispatch({type: 'FEED_TOKEN', feedToken})
-            var user_feed = client.feed('user', 'chris' , feedToken);
+            var user_feed = client.feed('user', scope.props.user.uid , feedToken);
             dispatch({type: 'USER_FEED', user_feed})
           })
           .catch(function(err) {
+            // first time user
             console.log(err)
           })})
         const {dispatch} = scope.props
@@ -69,9 +54,24 @@ class HomeComponent extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger
     console.log(this.props)
     console.log(nextProps)
+  }
+
+  follow() {
+    var scope = this
+    axios({
+      method: 'patch',
+      url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed/follow',
+      headers: { 'Authorization': scope.props.userToken },
+      params: { user1: scope.props.user.uid, mode1: 'user', user2: 'bBoPWEHS6UNbinCP6bkyZH1YXa32', mode2: 'user' }
+    })
+    .then(function(resp) {
+      console.log(resp)
+    })
+    .catch(function(err) {
+      console.log(err)
+    })
   }
 
   render() {
@@ -79,19 +79,18 @@ class HomeComponent extends Component {
       <div className='flex-row' style={{margin: 1+"%", justifyContent: 'flex-start'}}>
         
         <div style={{width: '30%', position: 'fixed', left: 40}} className="mobile-hide">
-        <Paper className="flex-col" zDepth={2} style={{minHeight: 210, borderRadius: 0, maxWidth: 20+'em', padding: 10, textAlign: 'center'}}>
-            {this.props.user ? <ProfileContainer /> : <CircularProgress size={60} thickness={7} style={{marginTop: 40}}/>}
+          <Paper className="flex-col" zDepth={2} style={{minHeight: 210, borderRadius: 0, maxWidth: 20+'em', padding: 10, textAlign: 'center'}}>
+              {this.props.user ? <ProfileContainer /> : <CircularProgress size={60} thickness={7} style={{marginTop: 40}}/>}
           </Paper>
-        </div>
 
-        <RaisedButton label="Fetch" onClick={this.fetch} />
+          
+        </div>
 
         <div className='feedContainer'>
           <NewPostContainer />
 
-          <CardComponent />
+          {this.props.user && this.props.userToken && <NewsFeedComponent />}
 
-          <CardComponent />
         </div>
 
         <div style={{position: 'fixed'}} className="mobile-hide notificationsContainer">
@@ -106,9 +105,9 @@ class HomeComponent extends Component {
 }
 
 function mapStateToProps(state) {
-  const {userToken, user_feed, user} = state.userReducer
+  const {userToken, user_feed, user, feedToken} = state.userReducer
   return {
-    userToken, user_feed, user
+    userToken, user_feed, user, feedToken
   }
 }
 

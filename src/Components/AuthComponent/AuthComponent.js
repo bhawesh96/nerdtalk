@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Paper from 'material-ui/Paper'
 import {hashHistory} from 'react-router'
 
-import {firebaseAuth, GithubProvider, GoogleProvider} from '../../firebaseConfig'
+import {firebaseAuth, firebaseDB, GithubProvider, GoogleProvider} from '../../firebaseConfig'
 
 import {connect} from 'react-redux'
 import {Link} from 'react-router'
@@ -20,6 +20,11 @@ class AuthComponent extends Component {
       firebaseAuth.signInWithPopup(provider == 'github' ? GithubProvider : GoogleProvider)
       .then(function(result) {
         console.log(result)
+        firebaseDB.ref('nerdtalkUsers/' + result.user.uid).set({
+            uid: result.user.uid
+          })
+        .then(function(res) { console.log(res) })
+        .catch(function(err) { console.log(err) });
         hashHistory.push('/home')
       })
       .catch(function(error) {

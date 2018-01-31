@@ -9,7 +9,6 @@ import {hashHistory} from 'react-router'
 import {firebaseAuth} from '../../firebaseConfig'
 
 import {connect} from 'react-redux'
-import {tableData} from './data'
 
 import axios from 'axios'
 import {client} from '../../Services/StreamService' 
@@ -36,11 +35,11 @@ class NotificationsContainer extends Component {
       method: 'get',
       url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed/token',
       headers: { 'Authorization': scope.props.userToken },
-      params: { mode: 'notification', user: 'chris'},
+      params: { mode: 'notification', user: scope.props.user.uid},
     })
     .then(function(resp) {
       var feedToken = resp.data;
-      var notification_feed = client.feed('notification', 'chris', feedToken)
+      var notification_feed = client.feed('notification', scope.props.user.uid, feedToken)
       notification_feed.subscribe((data) => {
         const {people} = scope.state
         var x = data.new[0]
@@ -61,7 +60,8 @@ class NotificationsContainer extends Component {
           {this.state.people && Object.values(this.state.people.reverse()).map((person, index) => (
               <ListItem
                 key={index}
-                primaryText={person.actor + ' ' + person.verb + 'ed ' + person.content}
+                primaryText={person.name + ' ' + person.verb + 'ed ' + person.content}
+                leftAvatar={<Avatar src={person.pp_url} />}
               />
             ))
           }

@@ -1,4 +1,4 @@
-const initialState = {}
+const initialState = {timeline: false}
 
 export function userReducer(state=initialState, action) {
 	switch(action.type) {
@@ -26,6 +26,10 @@ export function userReducer(state=initialState, action) {
 		case "USER_FEED":
 			return Object.assign({}, state, {
 			    user_feed: action.user_feed
+			})
+		case "TIMELINE":
+			return Object.assign({}, state, {
+			    timeline: action.timeline
 			})
 		default:
 			return state

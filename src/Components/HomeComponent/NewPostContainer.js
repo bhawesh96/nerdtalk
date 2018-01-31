@@ -45,30 +45,76 @@ class NewPostContainer extends Component {
   }
 
   post() {
-
+    var scope = this
     var html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+    
+    var ISOTime = (new Date()).toISOString().slice(0,-5) + '.00+05:30';
+    
+    if(this.state.mediaFile) {
+    firebaseStorage.child(this.props.user.uid + '/' + ISOTime).put(this.state.mediaFile)
+    .then(function(snapshot) {
+      scope.setState({uploading: false, mediaFile: null, snackbar: {open: true, message: 'Posted Successfully'}})
+      console.log(snapshot)
+        axios({
+          method: 'post',
+          url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed',
+          headers: { 'Authorization': this.props.userToken },
+          params: { mode: 'user', user: scope.props.user.uid },
+          data: JSON.stringify({
+                "actor": scope.props.user.uid,
+                "verb": "tweet",
+                "object": "1",
+                "time": ISOTime,
+                "foreign_id": "wefwefewfw",
+                "to":["notification:rakshit"],
+                "content": html,
+                "name": scope.props.user.name,
+                "pp_url": scope.props.user.photoURL,
+                "popularity": 0,
+                "media_url": ""
+          })
+        })
+        .then(function(resp) {
+          console.log(resp)
+        })
+        .catch(function(err) {
+          console.log(err)
+        })
+    })
+    .catch(function(error) {
+      console.log(error)
+    })
+  }
 
+  else {
+    console.log('posting')
+    console.log(ISOTime)
     axios({
-      method: 'post',
-      url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed',
-      headers: { 'Authorization': this.props.userToken },
-      params: { mode: 'user', user: 'chris' },
-      data: JSON.stringify({
-        "actor": "chris",
-        "verb": "tweet",
-        "object": "1",
-        "time": "2018-01-30T15:00:00.00+05:30",
-        "foreign_id": "12345",
-        "to":["notification:rakshit"],
-        "content": html
-      })
-    })
-    .then(function(resp) {
-      console.log(resp)
-    })
-    .catch(function(err) {
-      console.log(err)
-    })
+          method: 'post',
+          url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed',
+          headers: { 'Authorization': this.props.userToken },
+          params: { mode: 'user', user: scope.props.user.uid },
+          data: JSON.stringify({
+                "actor": scope.props.user.uid,
+                "verb": "tweet",
+                "object": "1",
+                "time": ISOTime,
+                "foreign_id": "wefwefewfw",
+                "to":["notification:rakshit"],
+                "content": html,
+                "name": scope.props.user.displayName,
+                "pp_url": scope.props.user.photoURL,
+                "popularity": 0,
+                "media_url": ""
+          })
+        })
+        .then(function(resp) {
+          console.log(resp)
+        })
+        .catch(function(err) {
+          console.log(err)
+        })
+    }
   }
 
    handleRequestClose = () => {
@@ -79,16 +125,6 @@ class NewPostContainer extends Component {
     var scope = this
     const file = e.target.files[0]
     this.setState({mediaFile: file, uploading: true})
-    var epochTime = (new Date()).getTime()
-    
-    firebaseStorage.child(this.props.user.uid + '/' + epochTime).put(file)
-    .then(function(snapshot) {
-      scope.setState({uploading: false, mediaFile: null, snackbar: {open: true, message: 'Posted Successfully'}})
-      console.log(snapshot)
-    })
-    .catch(function(error) {
-      console.log(error)
-    })
   }
 
   render() {

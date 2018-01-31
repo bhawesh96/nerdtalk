@@ -8,6 +8,7 @@
     "draftjs-to-html": "^0.8.2",
     "firebase": "^4.9.0",
     "getstream": "^3.12.1",
+    "html-react-parser": "^0.4.1",
     "material-ui": "^0.20.0",
     "particles.js": "^2.0.0",
     "react": "^16.2.0",
