@@ -4,10 +4,11 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
 
-from postFeed import postFeed
+from postFeed import post_feed
 from respond import respond
-from getFeed import getFeed
-from getToken import getToken
+from getFeed import get_feed
+from getToken import get_token
+from follow import follow
 
 
 def handler(event, context):
@@ -23,10 +24,13 @@ def handler(event, context):
 		return respond(ve, None, 403)
 
 	if event["httpMethod"] == "POST" and event["path"] == "/feed":
-		return postFeed(event)
+		return post_feed(event)
 
 	elif event["httpMethod"] == "GET" and event["path"] == "/feed":
-		return getFeed(event)
+		return get_feed(event)
 
 	elif event["httpMethod"] == "GET" and event["path"] == "/feed/token":
-		return getToken(event)
+		return get_token(event)
+
+	elif event["httpMethod"] == "PATCH" and event["path"] == '/feed/follow':
+		return follow(event)

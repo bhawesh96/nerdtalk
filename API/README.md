@@ -22,8 +22,10 @@ So we thought of combining both of those platforms and take the best of those.
 | ------- | ---- | ------ | ------- | ------------ | ------------ |
 | New post | /feed | POST | Authorization | mode, user | actor, verb, object, foreign_id, time, to, content |
 | Get post | /feed | GET | Authorization | mode, user, limit, offset | N.A. |
-| Follow user | /feed/follow | PUT | Authorization | user, target, src, dst | N.A. |
-| Like post | /feed/like | PATCH | Authorization | TBD | TBD |
+| Follow user | /feed/follow | PATCH | Authorization | user1, mode1, user2, mode2 | N.A. |
+
+
+**NOTE:** The Like API calls the new post API twice. The first call adds an activity to the logged in user, thus notifying followers that the user has liked another user's post. The second call to new post is made with the same foreign id+time combination such that the popularity count is updated, instead of creating a new activity. The user whose post was liked then receives a notification. 
  
 ### API Gateway 
 A lot of configuration has to be done in the API gateway for eash API that is exposed. It includes: 

@@ -2,7 +2,7 @@ import stream
 from respond import respond
 
 
-def getFeed(event):
+def get_feed(event):
 	try:
 		client = stream.connect('mwb8vtrjbmak', 'vqamq876cznxede4fvgpt247w82pwuxs3wwru8sku7nv9w8azp6ae5zn52cp6qz9',
 								location='us-east')

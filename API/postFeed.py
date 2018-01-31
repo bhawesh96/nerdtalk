@@ -3,7 +3,7 @@ from respond import respond
 import json
 
 
-def postFeed(event):
+def post_feed(event):
 	try:
 		client = stream.connect('mwb8vtrjbmak', 'vqamq876cznxede4fvgpt247w82pwuxs3wwru8sku7nv9w8azp6ae5zn52cp6qz9',
 		                        location='us-east')
@@ -16,7 +16,11 @@ def postFeed(event):
 			"content": body['content'],
 			"time": body['time'],
 			"foreign_id": body['foreign_id'],
-			"to": body['to']
+			"to": body['to'],
+			"name": body['name'],
+			"pp_url": body['pp_url'],
+			"popularity": int(body['popularity']),
+			"media_url": body["media_url"]
 		}
 
 		response = user_feed.add_activity(activity_data)['id']
