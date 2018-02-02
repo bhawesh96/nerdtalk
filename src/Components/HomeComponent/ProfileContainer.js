@@ -3,7 +3,6 @@ import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import {hashHistory} from 'react-router'
 import {firebaseAuth} from '../../firebaseConfig'
-
 import {connect} from 'react-redux'
 
 class ProfileContainer extends Component {
@@ -14,9 +13,12 @@ class ProfileContainer extends Component {
   }
 
   logout() {
+    var scope = this
     firebaseAuth.signOut()
     .then(function(res) {
       console.log('signed out successfully')
+      const {dispatch} = scope.props
+      dispatch({type: 'LOGOUT'})
     })
     .catch(function(err) {
       console.log('error')
@@ -39,10 +41,7 @@ class ProfileContainer extends Component {
 
           <RaisedButton label='News Feed' primary={!this.props.timeline} style={{width: 120, margin: 2}} onClick={() => this.switch(false)} />
           <RaisedButton label='Timeline' primary={this.props.timeline} style={{width: 120, margin: 2}} onClick={() => this.switch(true)}/>
-          
-          <RaisedButton label='Logout' style={{width: 120, marginTop: 20}} onClick={this.logout}/>
 
-          <span style={{margin: 10, borderBottom: '1px solid lightgrey', width: '100%'}}></span>
         </div>
     );
   }

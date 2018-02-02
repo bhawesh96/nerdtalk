@@ -19,11 +19,20 @@
   left: 350px;
   right: 350px;
   margin: 0% 1%;
+  top: 80px;
+}
+
+.profileContainer {
+  width: 30%;
+  position: fixed;
+  left: 40px;
+  top: 80px;
 }
 
 .notificationsContainer {
   width: 25%;
   right: 40px;
+  top: 80px;
 }
 
 .rteEditor {
@@ -42,7 +51,7 @@
 @media (max-width: 920px) {
   .notificationsContainer {
     left: 40px;
-    top: 320px;
+    top: 340px;
     width: 30%;
   }
   .feedContainer {

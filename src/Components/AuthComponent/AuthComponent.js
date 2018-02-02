@@ -17,11 +17,17 @@ class AuthComponent extends Component {
   }
 
     oAuthLogin(provider) {
+      var scope = this
       firebaseAuth.signInWithPopup(provider == 'github' ? GithubProvider : GoogleProvider)
       .then(function(result) {
         console.log(result)
+        const {dispatch} = scope.props
+        let user = result.user
+        dispatch({type: 'SUCCESS_LOGIN', user})
         firebaseDB.ref('nerdtalkUsers/' + result.user.uid).set({
-            uid: result.user.uid
+            uid: result.user.uid,
+            displayName: result.user.displayName,
+            photoURL: result.user.photoURL
           })
         .then(function(res) { console.log(res) })
         .catch(function(err) { console.log(err) });

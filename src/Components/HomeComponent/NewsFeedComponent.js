@@ -82,16 +82,20 @@ class NotificationsContainer extends Component {
         if(x) {
           for(let news of newsFeed) {
             if(news.id == x.id){
-              console.log('matching present')
+              console.log('matching present hence not pushing')
               newsFeed[i] = x
-              break;
               push = false;
+              break;
             }
             i++;
           }
         }
         if(x && push)
+        {
+          console.log('pushing')
           newsFeed.push(x)
+         
+        }
         scope.setState({newsFeed})
         console.log(scope.state.newsFeed)
       })
@@ -129,9 +133,9 @@ class NotificationsContainer extends Component {
     return (
       <div>
         
-      {this.state.fetching && <CircularProgress size={60} thickness={7} style={{margin: 40}} />}
+      {this.state.fetching && <CircularProgress size={60} thickness={7} style={{margin: 40, color: 'white'}} />}
 
-      {this.state.newsFeed && Object.values(this.state.newsFeed.reverse()).map(function(news, index) {
+      {this.state.newsFeed && Object.values(this.state.newsFeed).map(function(news, index) {
         if(this.props.timeline)
           if(news.actor == this.props.user.uid)
           return(

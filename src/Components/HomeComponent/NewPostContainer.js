@@ -9,6 +9,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import Snackbar from 'material-ui/Snackbar';
 
+import FollowersContainer from './FollowersContainer'
 import {firebaseStorage} from '../../firebaseConfig'
 import axios from 'axios'
 import {connect} from 'react-redux'
@@ -45,20 +46,20 @@ class NewPostContainer extends Component {
   }
 
   post() {
+    this.setState({posting: true})
     var scope = this
     var html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
     
-    var ISOTime = (new Date()).toISOString().slice(0,-5) + '.00+05:30';
+    var ISOTime = (new Date()).toISOString().slice(0,-5);
     
     if(this.state.mediaFile) {
-    firebaseStorage.child(this.props.user.uid + '/' + ISOTime).put(this.state.mediaFile)
+    firebaseStorage.ref(this.state.mediaType).child(this.props.user.uid + '/' + ISOTime).put(this.state.mediaFile)
     .then(function(snapshot) {
-      scope.setState({uploading: false, mediaFile: null, snackbar: {open: true, message: 'Posted Successfully'}})
       console.log(snapshot)
         axios({
           method: 'post',
           url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed',
-          headers: { 'Authorization': this.props.userToken },
+          headers: { 'Authorization': scope.props.userToken },
           params: { mode: 'user', user: scope.props.user.uid },
           data: JSON.stringify({
                 "actor": scope.props.user.uid,
@@ -68,14 +69,17 @@ class NewPostContainer extends Component {
                 "foreign_id": "wefwefewfw",
                 "to":["notification:rakshit"],
                 "content": html,
-                "name": scope.props.user.name,
+                "name": scope.props.user.displayName,
                 "pp_url": scope.props.user.photoURL,
                 "popularity": 0,
-                "media_url": ""
+                "media_url": snapshot.downloadURL
           })
         })
         .then(function(resp) {
           console.log(resp)
+          scope.setState({posting: false, mediaFile: null, snackbar: {open: true, message: 'Posted successfully on your timeline'}})
+          const editorState = EditorState.push(scope.state.editorState, ContentState.createFromText(''));
+          scope.setState({ editorState });
         })
         .catch(function(err) {
           console.log(err)
@@ -92,7 +96,7 @@ class NewPostContainer extends Component {
     axios({
           method: 'post',
           url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed',
-          headers: { 'Authorization': this.props.userToken },
+          headers: { 'Authorization': scope.props.userToken },
           params: { mode: 'user', user: scope.props.user.uid },
           data: JSON.stringify({
                 "actor": scope.props.user.uid,
@@ -110,6 +114,9 @@ class NewPostContainer extends Component {
         })
         .then(function(resp) {
           console.log(resp)
+          scope.setState({posting: false, mediaFile: null, snackbar: {open: true, message: 'Posted successfully on your timeline'}})
+          const editorState = EditorState.push(scope.state.editorState, ContentState.createFromText(''));
+          scope.setState({ editorState });
         })
         .catch(function(err) {
           console.log(err)
@@ -124,12 +131,14 @@ class NewPostContainer extends Component {
   uploadFile(e) {
     var scope = this
     const file = e.target.files[0]
-    this.setState({mediaFile: file, uploading: true})
+    this.setState({mediaFile: file, mediaType: file.type})
   }
 
   render() {
     return (
     <div>
+      {this.props.user && <FollowersContainer />}
+
       <Card style={{marginBottom: 10, borderRadius: 0}}>
         
         <Editor
@@ -148,13 +157,13 @@ class NewPostContainer extends Component {
             }}
         />
         <CardActions>
-          <RaisedButton backgroundColor={'#EEEEEE'} icon={<UploadPhotoIcon />} label={this.state.uploading ? 'Uploading' : 'Photo / Video'} onClick={this.mediaUpload} disabled={this.state.uploading}/>
+          <RaisedButton backgroundColor={'#EEEEEE'} icon={<UploadPhotoIcon />} label={'Photo / Video'} onClick={this.mediaUpload} disabled={this.state.mediaFile} />
 
           <span style={{whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: '30%', position: 'absolute', textOverflow: 'ellipsis', padding: 'inherit'}}>{this.state.mediaFile && this.state.mediaFile.name}</span>
 
           <input ref={input => this.inputElement = input} type="file" id="media-upload" onChange={this.uploadFile} className="hidden" accept="video/*,image/*"/>
 
-          <RaisedButton style={{float: 'right'}} primary={true} label='POST' onClick={this.post}/>
+          <RaisedButton style={{float: 'right'}} primary={true} label={this.state.posting ? 'Posting' : 'Post'} onClick={this.post} disabled={this.state.posting} />
         </CardActions>
       </Card>
 

@@ -8,11 +8,11 @@ var config = {
     storageBucket: "nerdtalk-e3941.appspot.com",
     messagingSenderId: "211539605105"
   };
-
+  
 firebase.initializeApp(config);
 
 export const firebaseDB = firebase.database();
 export const firebaseAuth = firebase.auth();
 export const GithubProvider = new firebase.auth.GithubAuthProvider();
 export const GoogleProvider = new firebase.auth.GoogleAuthProvider();
-export const firebaseStorage = new firebase.storage().ref('/images/');
+export const firebaseStorage = new firebase.storage();

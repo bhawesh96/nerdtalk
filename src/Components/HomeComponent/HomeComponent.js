@@ -11,7 +11,7 @@ import NewsFeedComponent from './NewsFeedComponent'
 import ProfileContainer from './ProfileContainer'
 import NotificationsContainer from './NotificationsContainer'
 import NewPostContainer from './NewPostContainer'
-
+import FollowersContainer from './FollowersContainer'
 
 import RaisedButton from 'material-ui/RaisedButton'
 import {client} from '../../Services/StreamService'
@@ -19,7 +19,6 @@ import {client} from '../../Services/StreamService'
 class HomeComponent extends Component {
   constructor(props) {
     super(props)
-    this.follow = this.follow.bind(this)
   }
 
   componentWillMount() {
@@ -28,11 +27,13 @@ class HomeComponent extends Component {
         if(user) {
         user.getToken().then(function(userToken) {
         dispatch({type: 'TOKEN', userToken})
+        console.log('USER USER USER')
+        console.log(scope.props.user)
           axios({
             method: 'get',
             url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed/token',
             headers: { 'Authorization': userToken },
-            params: { mode: 'user', user: scope.props.user.uid},
+            params: { mode: 'user', user: user.uid},
           })
           .then(function(resp) {
             var feedToken = resp.data;
@@ -58,27 +59,13 @@ class HomeComponent extends Component {
     console.log(nextProps)
   }
 
-  follow() {
-    var scope = this
-    axios({
-      method: 'patch',
-      url: 'https://sq6ptonjpk.execute-api.ap-south-1.amazonaws.com/test/feed/follow',
-      headers: { 'Authorization': scope.props.userToken },
-      params: { user1: scope.props.user.uid, mode1: 'user', user2: 'bBoPWEHS6UNbinCP6bkyZH1YXa32', mode2: 'user' }
-    })
-    .then(function(resp) {
-      console.log(resp)
-    })
-    .catch(function(err) {
-      console.log(err)
-    })
-  }
+  
 
   render() {
     return (
       <div className='flex-row' style={{margin: 1+"%", justifyContent: 'flex-start'}}>
         
-        <div style={{width: '30%', position: 'fixed', left: 40}} className="mobile-hide">
+        <div className="mobile-hide profileContainer">
           <Paper className="flex-col" zDepth={2} style={{minHeight: 210, borderRadius: 0, maxWidth: 20+'em', padding: 10, textAlign: 'center'}}>
               {this.props.user ? <ProfileContainer /> : <CircularProgress size={60} thickness={7} style={{marginTop: 40}}/>}
           </Paper>
@@ -87,6 +74,7 @@ class HomeComponent extends Component {
         </div>
 
         <div className='feedContainer'>
+
           <NewPostContainer />
 
           {this.props.user && this.props.userToken && <NewsFeedComponent />}
@@ -95,7 +83,7 @@ class HomeComponent extends Component {
 
         <div style={{position: 'fixed'}} className="mobile-hide notificationsContainer">
             <Paper className="flex-col" zDepth={2} style={{height: 400, borderRadius: 0}}>
-            {(this.props.user_feed && this.props.userToken) ? <NotificationsContainer /> : <CircularProgress size={60} thickness={7} style={{marginTop: 200}}/>}
+            {(this.props.user && this.props.user_feed && this.props.userToken) ? <NotificationsContainer /> : <CircularProgress size={60} thickness={7} style={{marginTop: 200}}/>}
             </Paper>
         </div>
 
