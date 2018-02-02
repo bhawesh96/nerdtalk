@@ -31,6 +31,8 @@ export function userReducer(state=initialState, action) {
 			return Object.assign({}, state, {
 			    timeline: action.timeline
 			})
+		case "LOGOUT":
+			return {timeline: false}
 		default:
 			return state
 	}
