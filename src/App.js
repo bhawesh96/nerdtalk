@@ -12,6 +12,7 @@ class App extends Component {
       <MuiThemeProvider >
         <div >
 
+        <AppBarComponent />
           {this.props.children}
 
         </div>
