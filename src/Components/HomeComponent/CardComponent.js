@@ -46,7 +46,7 @@ class CardComponent extends Component {
     function(snapshot) {
       const {likes} = scope.state
       scope.setState({likes: snapshot.val()})
-      console.log(scope.state.likes)
+      console.log(snapshot.val())
     })
   }
 

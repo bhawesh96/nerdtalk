@@ -20,17 +20,18 @@ class AuthComponent extends Component {
       var scope = this
       firebaseAuth.signInWithPopup(provider == 'github' ? GithubProvider : GoogleProvider)
       .then(function(result) {
-        console.log(result)
+        // console.log(result)
         const {dispatch} = scope.props
         let user = result.user
         dispatch({type: 'SUCCESS_LOGIN', user})
-        firebaseDB.ref('nerdtalkUsers/' + result.user.uid).set({
-            uid: result.user.uid,
-            displayName: result.user.displayName,
-            photoURL: result.user.photoURL
-          })
-        .then(function(res) { console.log(res) })
-        .catch(function(err) { console.log(err) });
+        // firebaseDB.ref('nerdtalkUsers/' + user.uid).on('value',
+        // function(snapshot) {
+        //   console.log('HERE HERE HERE')
+        //   console.log(snapshot.val())
+        // })
+        firebaseDB.ref('nerdtalkUsers/' + result.user.uid + '/uid').set(result.user.uid)
+        firebaseDB.ref('nerdtalkUsers/' + result.user.uid + '/displayName').set(result.user.displayName)
+        firebaseDB.ref('nerdtalkUsers/' + result.user.uid + '/photoURL').set(result.user.photoURL)
         hashHistory.push('/home')
       })
       .catch(function(error) {
