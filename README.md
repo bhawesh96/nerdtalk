@@ -1,5 +1,6 @@
 # NerdTalk
 The No-Nonsense Network: NerdTalk
+
 Live - https://bhawesh96.github.io/nerdtalk
 
 ## Folder Structure
@@ -39,6 +40,7 @@ Clone the repo and do `npm install`
 
 ## Available Scripts
 `npm start` : Runs the app in the development mode on port 3000
+
 `npm run build` : Builds the app for production to the `build` folder
 
 ## Installing a Dependency
